@@ -24,13 +24,13 @@ var yaml  = require('js-yaml');
 // * **configPath**, path to the configuration directory.
 // * **callback**, called when done.
 //
-var Config = module.exports.config = function (configPath, callback) {
+var Config = module.exports.config = function config(configPath, callback) {
   this.config = {};
 
   var e = new Error();
   var self = this;
   configPath = path.join(configPath, '*.yaml');
-  glob(configPath, function (err, files) {
+  glob(configPath, function globConfigs(err, files) {
     if (err) {
       callback(err);
       return;
@@ -41,7 +41,7 @@ var Config = module.exports.config = function (configPath, callback) {
       sortFiles,
       parseYaml,
       merge
-    ], function (err, config) {
+    ], function loadCompleteCallback(err, config) {
       self.config = config;
       callback(err);
     });
@@ -59,7 +59,7 @@ var Config = module.exports.config = function (configPath, callback) {
 // * **def**, default value to return if `key` is not found.
 // * **src**, internal argument used when getting key paths.
 //
-Config.prototype.get = function (key, def, _src) {
+Config.prototype.get = function config_get(key, def, _src) {
   if (!_src) _src = this.config;
   var path = key.split('.');
   var res = def || null;
@@ -89,8 +89,8 @@ Config.prototype.get = function (key, def, _src) {
 // plugins can then use `plugin.plugins.config.get(foo)` to get configuration
 // items.
 //
-module.exports.register = function (plugin, options, next) {
-  var conf = new Config(options.configPath, function (err) {
+module.exports.register = function register(plugin, options, next) {
+  var conf = new Config(options.configPath, function configCallback(err) {
     plugin.expose('get', conf.get.bind(conf));
     next(err);
   });
@@ -98,9 +98,9 @@ module.exports.register = function (plugin, options, next) {
 
 // Load files
 function loadFiles(configPath, files) {
-  return function (cb) {
-    async.map(files, function (file, next) {
-      fs.readFile(file, { encoding: 'utf-8' }, function (err, data) {
+  return function loadFiles(cb) {
+    async.map(files, function loadConfig(file, next) {
+      fs.readFile(file, { encoding: 'utf-8' }, function didLoad(err, data) {
         next(err, {
           file: file,
           data: data
@@ -115,7 +115,7 @@ function sortFiles(files, next) {
   function isConfig(file) {
     return (/config\.yaml$/).test(file);
   }
-  files.sort(function (a, b) {
+  files.sort(function sortFiles(a, b) {
     if (isConfig(a.file)) return 1;
     else if (isConfig(b.file)) return -1;
     else return 0;
@@ -126,7 +126,7 @@ function sortFiles(files, next) {
 
 // Parse YAML
 function parseYaml(files, next) {
-  async.map(files, function (file, callback) {
+  async.map(files, function mapFiles(file, callback) {
     var res, err;
     try {
       res = yaml.load(file.data);
@@ -142,7 +142,7 @@ function parseYaml(files, next) {
 // Merge files
 function merge(data, next) {
   var config = {};
-  data.forEach(function (c) {
+  data.forEach(function forEachConfig(c) {
     config = _.merge(config, c);
   });
 

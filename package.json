@@ -1,0 +1,38 @@
+{
+  "name": "hapi-config",
+  "version": "1.0.0",
+  "main": "config.js",
+  "description": "Configuration loader plugin for hapi.",
+  "scripts": {
+    "test": "mocha -u tdd -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bloglovin/node-hapi-config"
+  },
+  "keywords": [
+    "hapi",
+    "config",
+    "yaml"
+  ],
+  "author": "Bloglovin <dev@bloglovin.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bloglovin/node-hapi-config/issues"
+  },
+  "homepage": "https://github.com/bloglovin/node-hapi-config",
+  "devDependencies": {
+    "hapi": "2.x.x",
+    "istanbul": "~0.2.3",
+    "mocha": "~1.17.0"
+  },
+  "peerDependencies": {
+    "hapi": "2.x.x"
+  },
+  "dependencies": {
+    "async": "~0.2.9",
+    "lodash": "~2.4.1",
+    "glob": "~3.2.8",
+    "js-yaml": "~3.0.1"
+  }
+}

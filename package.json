@@ -1,10 +1,10 @@
 {
-  "name": "hapi-config",
+  "name": "conman",
   "version": "1.0.0",
   "main": "config.js",
-  "description": "Configuration loader plugin for hapi.",
+  "description": "Configuration manager plugin for hapi.",
   "scripts": {
-    "test": "mocha -u tdd -R spec"
+    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -u tdd -R spec"
   },
   "repository": {
     "type": "git",

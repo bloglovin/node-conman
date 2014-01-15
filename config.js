@@ -31,6 +31,9 @@ var Config = module.exports.config = function config(configPath, callback) {
   var self = this;
   configPath = path.join(configPath, '*.yaml');
   glob(configPath, function globConfigs(err, files) {
+    if (files.length === 0 && !err) {
+      err = new Error('No configuration files found at path.');
+    }
     if (err) {
       callback(err);
       return;
@@ -57,10 +60,9 @@ var Config = module.exports.config = function config(configPath, callback) {
 //
 // * **key**, name of the item to get. Keypaths separated by `.` works.
 // * **def**, default value to return if `key` is not found.
-// * **src**, internal argument used when getting key paths.
 //
-Config.prototype.get = function config_get(key, def, _src) {
-  if (!_src) _src = this.config;
+Config.prototype.get = function config_get(key, def) {
+  var _src = this.config;
   var path = key.split('.');
   var res = def || null;
   do {
@@ -96,6 +98,8 @@ module.exports.register = function register(plugin, options, next) {
   });
 };
 
+// --------------------------------------------------------------------------
+
 // Load files
 function loadFiles(configPath, files) {
   return function loadFiles(cb) {
@@ -109,6 +113,7 @@ function loadFiles(configPath, files) {
     }, cb);
   };
 }
+module.exports._loadFiles = loadFiles;
 
 // Sort files
 function sortFiles(files, next) {
@@ -123,6 +128,7 @@ function sortFiles(files, next) {
 
   next(null, files);
 }
+module.exports._sortFiles = sortFiles;
 
 // Parse YAML
 function parseYaml(files, next) {
@@ -139,6 +145,8 @@ function parseYaml(files, next) {
   }, next);
 }
 
+module.exports._parseYaml = parseYaml;
+
 // Merge files
 function merge(data, next) {
   var config = {};
@@ -148,4 +156,5 @@ function merge(data, next) {
 
   next(null, config);
 }
+module.exports._merge = merge;
 
